@@ -1,5 +1,9 @@
 const readline = require("readline");
-
+const {
+    addToPlaylist,
+    getPlaylist,
+    removeFromPlaylist
+} = require("../music/playlist");
 const { scanMusicDirectory } = require("../music/scanner");
 const { playMusic, stopMusic } = require("../music/player");
 
@@ -42,7 +46,51 @@ function startInput() {
                 playMusic(filePath);
             }
         }
+        else if (command === "add") {
+            if (!argument) {
+                console.log("Please provide a filename.");
+        } else {
+            const musicFiles = scanMusicDirectory();
 
+            if (!musicFiles.includes(argument)) {
+                console.log("Music file not found.");
+        } else {
+            addToPlaylist(argument);
+            console.log(`Added to playlist: ${argument}`);
+        }
+    }
+}
+
+        else if (command === "playlist") {
+            const songs = getPlaylist();
+
+            if (songs.length === 0) {
+                console.log("Playlist is empty.");
+            } else {
+                songs.forEach((song, index) => {
+                    console.log(`${index + 1}. ${song}`);
+                });
+            }
+        }
+        else if (command === "remove") {
+            if (!argument) {
+                console.log("Please provide a playlist number.");
+            } else {
+                const index = Number(argument) - 1;
+
+                if (Number.isNaN(index)) {
+                    console.log("Please provide a valid number.");
+                } else {
+                    const removed = removeFromPlaylist(index);
+
+                    if (!removed) {
+                        console.log("Invalid playlist number.");
+                    } else {
+                        console.log("Song removed from playlist.");
+                    }
+                }
+            }
+        }
         else if (command === "stop") {
             stopMusic();
         }
@@ -51,6 +99,7 @@ function startInput() {
             rl.close();
             return;
         }
+
 
         else {
             console.log("Unknown command.");
