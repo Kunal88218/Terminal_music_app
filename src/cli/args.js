@@ -1,5 +1,9 @@
 const { Command } = require("commander");
+const path = require("path");
+
 const { scanMusicDirectory } = require("../music/scanner");
+const { playMusic } = require("../music/player");
+
 const program = new Command();
 
 program
@@ -23,6 +27,23 @@ program
         musicFiles.forEach((file, index) => {
             console.log(`${index + 1}. ${file}`);
         });
+    });
+
+program
+    .command("play <filename>")
+    .description("Play a music file")
+    .action((filename) => {
+        const filePath = path.join(
+            __dirname,
+            "..",
+            "..",
+            "music",
+            filename
+        );
+
+        console.log(`Playing: ${filename}`);
+
+        playMusic(filePath);
     });
 
 module.exports = program;
