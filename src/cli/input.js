@@ -1,14 +1,42 @@
 const readline = require("readline");
+
 const {
     addToPlaylist,
     getPlaylist,
     removeFromPlaylist,
-    getSong
+    getSong,
+    setCurrentIndex,
+    getCurrentIndex
 } = require("../music/playlist");
+
 const { scanMusicDirectory } = require("../music/scanner");
+
 const { playMusic, stopMusic } = require("../music/player");
 
 function startInput() {
+    function playNextSong() {
+    const nextIndex = getCurrentIndex() + 1;
+    const nextSong = getSong(nextIndex);
+
+    if (nextSong === null) {
+        console.log("Playlist finished.");
+        return;
+    }
+
+    setCurrentIndex(nextIndex);
+
+    const path = require("path");
+
+    const nextFilePath = path.join(
+        __dirname,
+        "..",
+        "..",
+        "music",
+        nextSong
+    );
+
+    playMusic(nextFilePath, playNextSong);
+}
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -19,6 +47,7 @@ function startInput() {
 
     rl.on("line", (input) => {
         const parts = input.trim().split(" ");
+
         const command = parts[0];
         const argument = parts[1];
 
@@ -42,6 +71,8 @@ function startInput() {
                     if (song === null) {
                         console.log("Invalid playlist number.");
                     } else {
+                        setCurrentIndex(playlistIndex - 1);
+
                         const path = require("path");
 
                         const filePath = path.join(
@@ -52,8 +83,30 @@ function startInput() {
                             song
                         );
 
-                        playMusic(filePath);
-                    }
+                        playMusic(filePath, () => {
+            const nextIndex = getCurrentIndex() + 1;
+            const nextSong = getSong(nextIndex);
+
+            if (nextSong === null) {
+                console.log("Playlist finished.");
+                return;
+            }
+
+                setCurrentIndex(nextIndex);
+
+                const path = require("path");
+
+                const nextFilePath = path.join(
+                    __dirname,
+                    "..",
+                    "..",
+                    "music",
+                    nextSong
+                );
+
+                playMusic(nextFilePath);
+            });
+                        }
                 } else {
                     const path = require("path");
 
@@ -69,20 +122,21 @@ function startInput() {
                 }
             }
         }
+
         else if (command === "add") {
             if (!argument) {
                 console.log("Please provide a filename.");
-        } else {
-            const musicFiles = scanMusicDirectory();
+            } else {
+                const musicFiles = scanMusicDirectory();
 
-            if (!musicFiles.includes(argument)) {
-                console.log("Music file not found.");
-        } else {
-            addToPlaylist(argument);
-            console.log(`Added to playlist: ${argument}`);
+                if (!musicFiles.includes(argument)) {
+                    console.log("Music file not found.");
+                } else {
+                    addToPlaylist(argument);
+                    console.log(`Added to playlist: ${argument}`);
+                }
+            }
         }
-    }
-}
 
         else if (command === "playlist") {
             const songs = getPlaylist();
@@ -95,6 +149,7 @@ function startInput() {
                 });
             }
         }
+
         else if (command === "remove") {
             if (!argument) {
                 console.log("Please provide a playlist number.");
@@ -114,6 +169,7 @@ function startInput() {
                 }
             }
         }
+
         else if (command === "stop") {
             stopMusic();
         }
@@ -122,7 +178,6 @@ function startInput() {
             rl.close();
             return;
         }
-
 
         else {
             console.log("Unknown command.");

@@ -1,8 +1,11 @@
 const player = require("play-sound")();
 
 let currentProcess = null;
+let manuallyStopped = false;
 
-function playMusic(filePath) {
+function playMusic(filePath, onFinish = null) {
+    manuallyStopped = false;
+
     currentProcess = player.play(filePath, (error) => {
         if (error) {
             console.error("Error playing music:", error.message);
@@ -14,7 +17,15 @@ function playMusic(filePath) {
     console.log(`PID: ${currentProcess.pid}`);
 
     currentProcess.on("exit", () => {
+        console.log("Song finished.");
+
         currentProcess = null;
+
+        if (!manuallyStopped && onFinish) {
+            onFinish();
+        }
+
+        manuallyStopped = false;
     });
 }
 
@@ -24,8 +35,9 @@ function stopMusic() {
         return;
     }
 
+    manuallyStopped = true;
+
     currentProcess.kill();
-    currentProcess = null;
 
     console.log("Music stopped.");
 }

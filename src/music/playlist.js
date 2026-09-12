@@ -1,5 +1,5 @@
 let playlist = [];
-
+let currentIndex = -1;
 function addToPlaylist(song) {
     playlist.push(song);
 }
@@ -23,9 +23,18 @@ function getSong(index) {
 
     return playlist[index];
 }
+function setCurrentIndex(index) {
+    currentIndex = index;
+}
+
+function getCurrentIndex() {
+    return currentIndex;
+}
 module.exports = {
     addToPlaylist,
     getPlaylist,
     removeFromPlaylist,
-    getSong
+    getSong,
+    setCurrentIndex,
+    getCurrentIndex
 };
