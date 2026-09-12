@@ -2,7 +2,8 @@ const readline = require("readline");
 const {
     addToPlaylist,
     getPlaylist,
-    removeFromPlaylist
+    removeFromPlaylist,
+    getSong
 } = require("../music/playlist");
 const { scanMusicDirectory } = require("../music/scanner");
 const { playMusic, stopMusic } = require("../music/player");
@@ -31,19 +32,41 @@ function startInput() {
 
         else if (command === "play") {
             if (!argument) {
-                console.log("Please provide a filename.");
+                console.log("Please provide a filename or playlist number.");
             } else {
-                const path = require("path");
+                const playlistIndex = Number(argument);
 
-                const filePath = path.join(
-                    __dirname,
-                    "..",
-                    "..",
-                    "music",
-                    argument
-                );
+                if (!Number.isNaN(playlistIndex)) {
+                    const song = getSong(playlistIndex - 1);
 
-                playMusic(filePath);
+                    if (song === null) {
+                        console.log("Invalid playlist number.");
+                    } else {
+                        const path = require("path");
+
+                        const filePath = path.join(
+                            __dirname,
+                            "..",
+                            "..",
+                            "music",
+                            song
+                        );
+
+                        playMusic(filePath);
+                    }
+                } else {
+                    const path = require("path");
+
+                    const filePath = path.join(
+                        __dirname,
+                        "..",
+                        "..",
+                        "music",
+                        argument
+                    );
+
+                    playMusic(filePath);
+                }
             }
         }
         else if (command === "add") {

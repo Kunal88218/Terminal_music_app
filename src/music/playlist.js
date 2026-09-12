@@ -16,9 +16,16 @@ function removeFromPlaylist(index) {
     playlist.splice(index, 1);
     return true;
 }
+function getSong(index) {
+    if (index < 0 || index >= playlist.length) {
+        return null;
+    }
 
+    return playlist[index];
+}
 module.exports = {
     addToPlaylist,
     getPlaylist,
-    removeFromPlaylist
+    removeFromPlaylist,
+    getSong
 };
