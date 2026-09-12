@@ -2,8 +2,7 @@ const { Command } = require("commander");
 const path = require("path");
 
 const { scanMusicDirectory } = require("../music/scanner");
-const { playMusic } = require("../music/player");
-
+const { playMusic, stopMusic } = require("../music/player");
 const program = new Command();
 
 program
@@ -44,6 +43,12 @@ program
         console.log(`Playing: ${filename}`);
 
         playMusic(filePath);
+    });
+program
+    .command("stop")
+    .description("Stop the currently playing music")
+    .action(() => {
+        stopMusic();
     });
 
 module.exports = program;

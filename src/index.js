@@ -1,3 +1,3 @@
-const program = require("./cli/args");
+const { startInput } = require("./cli/input");
 
-program.parse();
+startInput();
