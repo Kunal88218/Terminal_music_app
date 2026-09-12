@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const musicDirectory = path.join(__dirname, "..", "music");
+const musicDirectory = path.join(__dirname, "..", "..", "music");
 
 function scanMusicDirectory() {
     try {
@@ -20,14 +20,6 @@ function scanMusicDirectory() {
     }
 }
 
-const musicFiles = scanMusicDirectory();
-
-console.log("Available music:");
-
-if (musicFiles.length === 0) {
-    console.log("No .mp3 or .wav files found.");
-} else {
-    musicFiles.forEach((file, index) => {
-        console.log(`${index + 1}. ${file}`);
-    });
-}
+module.exports = {
+    scanMusicDirectory
+};

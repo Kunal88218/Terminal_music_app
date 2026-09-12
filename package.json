@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Kunal88218/Terminal_music_app/issues"
   },
-  "homepage": "https://github.com/Kunal88218/Terminal_music_app#readme"
+  "homepage": "https://github.com/Kunal88218/Terminal_music_app#readme",
+  "dependencies": {
+    "commander": "^15.0.0"
+  }
 }
