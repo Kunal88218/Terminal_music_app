@@ -1,6 +1,16 @@
 const readline = require("readline");
 const path = require("path");
 
+function getMusicFilePath(filename) {
+    return path.join(
+        __dirname,
+        "..",
+        "..",
+        "music",
+        filename
+    );
+}
+
 const {
     addToPlaylist,
     getPlaylist,
@@ -54,13 +64,7 @@ function startInput() {
 
         setCurrentIndex(nextIndex);
 
-        const nextFilePath = path.join(
-            __dirname,
-            "..",
-            "..",
-            "music",
-            nextSong
-        );
+        const nextFilePath = getMusicFilePath(nextSong);
 
         playMusic(nextFilePath, playNextSong);
     }
@@ -94,13 +98,7 @@ function startInput() {
 
         setCurrentIndex(nextIndex);
 
-        const filePath = path.join(
-            __dirname,
-            "..",
-            "..",
-            "music",
-            song
-        );
+        const filePath = getMusicFilePath(song);
 
         playMusic(filePath, playNextSong);
     }
@@ -115,19 +113,21 @@ function startInput() {
 
     rl.on("line", (input) => {
 
-
         const parts = input.trim().split(/\s+/);
 
         const command = parts[0];
         const argument = parts.slice(1).join(" ");
+
         // HELP
         if (command === "help") {
-    console.log(`
+
+            console.log(`
 Available commands:
 
   list                    List all music files
   add <filename>          Add a song to the playlist
   playlist                Show the current playlist
+  status                  Show current playback status
   remove <number>         Remove a song from the playlist
   play <number>           Play a playlist song
   play <filename>         Play a music file
@@ -139,13 +139,10 @@ Available commands:
   repeat                  Show current repeat mode
   help                    Show available commands
   exit                    Exit the music player
-status                  Show current playback status
 `);
-}
-        
+        }
 
         // LIST
-
         else if (command === "list") {
 
             const musicFiles = scanMusicDirectory();
@@ -154,7 +151,9 @@ status                  Show current playback status
 
             if (musicFiles.length === 0) {
                 console.log("No .mp3 or .wav files found.");
-            } else {
+            }
+
+            else {
                 musicFiles.forEach((file, index) => {
                     console.log(`${index + 1}. ${file}`);
                 });
@@ -169,6 +168,7 @@ status                  Show current playback status
             }
 
             else {
+
                 const playlistIndex = Number(argument);
 
                 // Play using playlist number
@@ -187,13 +187,7 @@ status                  Show current playback status
 
                         setCurrentIndex(playlistIndex - 1);
 
-                        const filePath = path.join(
-                            __dirname,
-                            "..",
-                            "..",
-                            "music",
-                            song
-                        );
+                        const filePath = getMusicFilePath(song);
 
                         playMusic(filePath, playNextSong);
                     }
@@ -205,13 +199,7 @@ status                  Show current playback status
                     // Stop currently playing song
                     stopMusic();
 
-                    const filePath = path.join(
-                        __dirname,
-                        "..",
-                        "..",
-                        "music",
-                        argument
-                    );
+                    const filePath = getMusicFilePath(argument);
 
                     playMusic(filePath);
                 }
@@ -255,24 +243,29 @@ status                  Show current playback status
                 });
             }
         }
+
         // STATUS
-else if (command === "status") {
+        else if (command === "status") {
 
-    const currentIndex = getCurrentIndex();
-    const playlist = getPlaylist();
-    const repeatMode = getRepeatMode();
+            const currentIndex = getCurrentIndex();
+            const playlist = getPlaylist();
+            const repeatMode = getRepeatMode();
 
-    if (currentIndex === -1) {
-        console.log("No song selected.");
-    } else {
-        const currentSong = getSong(currentIndex);
+            if (currentIndex === -1) {
+                console.log("No song selected.");
+            }
 
-        console.log(`Current song: ${currentSong}`);
-        console.log(`Position: ${currentIndex + 1}/${playlist.length}`);
-    }
+            else {
+                const currentSong = getSong(currentIndex);
 
-    console.log(`Repeat mode: ${repeatMode}`);
-}
+                console.log(`Current song: ${currentSong}`);
+                console.log(
+                    `Position: ${currentIndex + 1}/${playlist.length}`
+                );
+            }
+
+            console.log(`Repeat mode: ${repeatMode}`);
+        }
 
         // REMOVE
         else if (command === "remove") {
@@ -360,7 +353,9 @@ else if (command === "status") {
         else if (command === "exit") {
 
             stopMusic();
+
             rl.close();
+
             return;
         }
 
