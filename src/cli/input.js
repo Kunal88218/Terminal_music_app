@@ -66,6 +66,12 @@ function startInput() {
     }
 
     function nextSong() {
+        const playlist = getPlaylist();
+
+        if (playlist.length === 0) {
+            console.log("Playlist is empty.");
+            return;
+        }
         const currentIndex = getCurrentIndex();
         const repeatMode = getRepeatMode();
 
