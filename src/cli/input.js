@@ -305,6 +305,13 @@ function startInput() {
 
         rl.prompt();
     });
+    rl.on("SIGINT", () => {
+    console.log("\nExiting music player...");
+
+    stopMusic();
+
+    rl.close();
+    });
 
     return rl;
 }
