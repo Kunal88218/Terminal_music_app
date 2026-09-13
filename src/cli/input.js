@@ -14,29 +14,59 @@ const { scanMusicDirectory } = require("../music/scanner");
 const { playMusic, stopMusic } = require("../music/player");
 
 function startInput() {
-    function playNextSong() {
-    const nextIndex = getCurrentIndex() + 1;
-    const nextSong = getSong(nextIndex);
 
-    if (nextSong === null) {
-        console.log("Playlist finished.");
-        return;
+    function playNextSong() {
+        const nextIndex = getCurrentIndex() + 1;
+
+        const nextSong = getSong(nextIndex);
+
+        if (nextSong === null) {
+            console.log("Playlist finished.");
+            return;
+        }
+
+        setCurrentIndex(nextIndex);
+
+        const path = require("path");
+
+        const nextFilePath = path.join(
+            __dirname,
+            "..",
+            "..",
+            "music",
+            nextSong
+        );
+
+        playMusic(nextFilePath, playNextSong);
     }
 
-    setCurrentIndex(nextIndex);
+    function nextSong() {
+        const nextIndex = getCurrentIndex() + 1;
 
-    const path = require("path");
+        const song = getSong(nextIndex);
 
-    const nextFilePath = path.join(
-        __dirname,
-        "..",
-        "..",
-        "music",
-        nextSong
-    );
+        if (song === null) {
+            console.log("Already at the end of the playlist.");
+            return;
+        }
 
-    playMusic(nextFilePath, playNextSong);
-}
+        stopMusic();
+
+        setCurrentIndex(nextIndex);
+
+        const path = require("path");
+
+        const filePath = path.join(
+            __dirname,
+            "..",
+            "..",
+            "music",
+            song
+        );
+
+        playMusic(filePath, playNextSong);
+    }
+
     const rl = readline.createInterface({
         input: process.stdin,
         output: process.stdout,
@@ -46,31 +76,45 @@ function startInput() {
     rl.prompt();
 
     rl.on("line", (input) => {
+
         const parts = input.trim().split(" ");
 
         const command = parts[0];
+
         const argument = parts[1];
 
         if (command === "list") {
+
             const musicFiles = scanMusicDirectory();
 
             musicFiles.forEach((file, index) => {
                 console.log(`${index + 1}. ${file}`);
             });
+
         }
 
         else if (command === "play") {
+
             if (!argument) {
-                console.log("Please provide a filename or playlist number.");
+
+                console.log(
+                    "Please provide a filename or playlist number."
+                );
+
             } else {
+
                 const playlistIndex = Number(argument);
 
                 if (!Number.isNaN(playlistIndex)) {
+
                     const song = getSong(playlistIndex - 1);
 
                     if (song === null) {
+
                         console.log("Invalid playlist number.");
+
                     } else {
+
                         setCurrentIndex(playlistIndex - 1);
 
                         const path = require("path");
@@ -83,31 +127,11 @@ function startInput() {
                             song
                         );
 
-                        playMusic(filePath, () => {
-            const nextIndex = getCurrentIndex() + 1;
-            const nextSong = getSong(nextIndex);
+                        playMusic(filePath, playNextSong);
+                    }
 
-            if (nextSong === null) {
-                console.log("Playlist finished.");
-                return;
-            }
-
-                setCurrentIndex(nextIndex);
-
-                const path = require("path");
-
-                const nextFilePath = path.join(
-                    __dirname,
-                    "..",
-                    "..",
-                    "music",
-                    nextSong
-                );
-
-                playMusic(nextFilePath);
-            });
-                        }
                 } else {
+
                     const path = require("path");
 
                     const filePath = path.join(
@@ -121,66 +145,104 @@ function startInput() {
                     playMusic(filePath);
                 }
             }
+
         }
 
         else if (command === "add") {
+
             if (!argument) {
+
                 console.log("Please provide a filename.");
+
             } else {
+
                 const musicFiles = scanMusicDirectory();
 
                 if (!musicFiles.includes(argument)) {
+
                     console.log("Music file not found.");
+
                 } else {
+
                     addToPlaylist(argument);
+
                     console.log(`Added to playlist: ${argument}`);
                 }
             }
+
         }
 
         else if (command === "playlist") {
+
             const songs = getPlaylist();
 
             if (songs.length === 0) {
+
                 console.log("Playlist is empty.");
+
             } else {
+
                 songs.forEach((song, index) => {
                     console.log(`${index + 1}. ${song}`);
                 });
             }
+
         }
 
         else if (command === "remove") {
+
             if (!argument) {
+
                 console.log("Please provide a playlist number.");
+
             } else {
+
                 const index = Number(argument) - 1;
 
                 if (Number.isNaN(index)) {
+
                     console.log("Please provide a valid number.");
+
                 } else {
+
                     const removed = removeFromPlaylist(index);
 
                     if (!removed) {
+
                         console.log("Invalid playlist number.");
+
                     } else {
+
                         console.log("Song removed from playlist.");
                     }
                 }
             }
+
+        }
+
+        else if (command === "next") {
+
+            nextSong();
+
         }
 
         else if (command === "stop") {
+
             stopMusic();
+
         }
 
         else if (command === "exit") {
+
             rl.close();
             return;
+
         }
 
         else {
+
             console.log("Unknown command.");
+
         }
 
         rl.prompt();
