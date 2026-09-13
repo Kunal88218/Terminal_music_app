@@ -1,5 +1,6 @@
 let playlist = [];
 let currentIndex = -1;
+let repeatMode = "off";
 function addToPlaylist(song) {
     playlist.push(song);
 }
@@ -40,6 +41,18 @@ function setCurrentIndex(index) {
 function getCurrentIndex() {
     return currentIndex;
 }
+function setRepeatMode(mode) {
+    if (mode !== "off" && mode !== "one" && mode !== "all") {
+        return false;
+    }
+
+    repeatMode = mode;
+    return true;
+}
+
+function getRepeatMode() {
+    return repeatMode;
+}
 module.exports = {
     addToPlaylist,
     getPlaylist,
@@ -47,5 +60,7 @@ module.exports = {
     getSong,
     setCurrentIndex,
     getCurrentIndex,
-    shufflePlaylist
+    shufflePlaylist,
+    setRepeatMode,
+    getRepeatMode
 };
