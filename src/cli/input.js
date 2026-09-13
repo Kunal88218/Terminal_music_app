@@ -115,13 +115,37 @@ function startInput() {
 
     rl.on("line", (input) => {
 
+
         const parts = input.trim().split(/\s+/);
 
         const command = parts[0];
         const argument = parts.slice(1).join(" ");
+        // HELP
+        if (command === "help") {
+    console.log(`
+Available commands:
+
+  list                    List all music files
+  add <filename>          Add a song to the playlist
+  playlist                Show the current playlist
+  remove <number>         Remove a song from the playlist
+  play <number>           Play a playlist song
+  play <filename>         Play a music file
+  next                    Play the next song
+  stop                    Stop the current song
+  shuffle                 Shuffle the playlist
+  repeat <mode>           Set repeat mode
+                           Modes: off, one, all
+  repeat                  Show current repeat mode
+  help                    Show available commands
+  exit                    Exit the music player
+`);
+}
+        
 
         // LIST
-        if (command === "list") {
+
+        else if (command === "list") {
 
             const musicFiles = scanMusicDirectory();
 
