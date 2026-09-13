@@ -18,7 +18,11 @@ function shufflePlaylist() {
         ];
     }
 }
-
+function resetPlaylist() {
+    playlist = [];
+    currentIndex = -1;
+    repeatMode = "off";
+}
 function removeFromPlaylist(index) {
     if (index < 0 || index >= playlist.length) {
         return false;
@@ -80,5 +84,6 @@ module.exports = {
     getCurrentIndex,
     shufflePlaylist,
     setRepeatMode,
-    getRepeatMode
+    getRepeatMode,
+    resetPlaylist
 };
