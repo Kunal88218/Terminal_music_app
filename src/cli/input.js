@@ -72,6 +72,7 @@ function startInput() {
             console.log("Playlist is empty.");
             return;
         }
+
         const currentIndex = getCurrentIndex();
         const repeatMode = getRepeatMode();
 
@@ -155,6 +156,10 @@ function startInput() {
                     }
 
                     else {
+
+                        // Stop currently playing song
+                        stopMusic();
+
                         setCurrentIndex(playlistIndex - 1);
 
                         const filePath = path.join(
@@ -171,6 +176,9 @@ function startInput() {
 
                 // Play using filename
                 else {
+
+                    // Stop currently playing song
+                    stopMusic();
 
                     const filePath = path.join(
                         __dirname,
@@ -241,6 +249,7 @@ function startInput() {
                 else {
 
                     const currentIndex = getCurrentIndex();
+
                     const removed = removeFromPlaylist(index);
 
                     if (!removed) {
@@ -307,6 +316,7 @@ function startInput() {
         // EXIT
         else if (command === "exit") {
 
+            stopMusic();
             rl.close();
             return;
         }
@@ -319,12 +329,15 @@ function startInput() {
 
         rl.prompt();
     });
+
+    // Handle Ctrl+C
     rl.on("SIGINT", () => {
-    console.log("\nExiting music player...");
 
-    stopMusic();
+        console.log("\nExiting music player...");
 
-    rl.close();
+        stopMusic();
+
+        rl.close();
     });
 
     return rl;
