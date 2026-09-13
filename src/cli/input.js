@@ -108,10 +108,10 @@ function startInput() {
 
     rl.on("line", (input) => {
 
-        const parts = input.trim().split(" ");
+        const parts = input.trim().split(/\s+/);
 
         const command = parts[0];
-        const argument = parts[1];
+        const argument = parts.slice(1).join(" ");
 
         // LIST
         if (command === "list") {

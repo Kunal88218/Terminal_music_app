@@ -25,6 +25,24 @@ function removeFromPlaylist(index) {
     }
 
     playlist.splice(index, 1);
+
+    // If the removed song was before the current song,
+    // shift the current index backward.
+    if (index < currentIndex) {
+        currentIndex--;
+    }
+
+    // If playlist became empty
+    if (playlist.length === 0) {
+        currentIndex = -1;
+    }
+
+    // If the last song was removed while currentIndex
+    // is now outside the playlist
+    else if (currentIndex >= playlist.length) {
+        currentIndex = playlist.length - 1;
+    }
+
     return true;
 }
 function getSong(index) {
