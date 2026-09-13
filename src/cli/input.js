@@ -6,7 +6,8 @@ const {
     removeFromPlaylist,
     getSong,
     setCurrentIndex,
-    getCurrentIndex
+    getCurrentIndex,
+    shufflePlaylist
 } = require("../music/playlist");
 
 const { scanMusicDirectory } = require("../music/scanner");
@@ -219,7 +220,10 @@ function startInput() {
             }
 
         }
-
+        else if (command === "shuffle") {
+            shufflePlaylist();
+            console.log("Playlist shuffled.");
+        }
         else if (command === "next") {
 
             nextSong();

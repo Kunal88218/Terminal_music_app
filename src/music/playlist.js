@@ -7,6 +7,16 @@ function addToPlaylist(song) {
 function getPlaylist() {
     return playlist;
 }
+function shufflePlaylist() {
+    for (let i = playlist.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+
+        [playlist[i], playlist[randomIndex]] = [
+            playlist[randomIndex],
+            playlist[i]
+        ];
+    }
+}
 
 function removeFromPlaylist(index) {
     if (index < 0 || index >= playlist.length) {
@@ -36,5 +46,6 @@ module.exports = {
     removeFromPlaylist,
     getSong,
     setCurrentIndex,
-    getCurrentIndex
+    getCurrentIndex,
+    shufflePlaylist
 };
