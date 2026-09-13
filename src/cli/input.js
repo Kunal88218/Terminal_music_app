@@ -139,6 +139,7 @@ Available commands:
   repeat                  Show current repeat mode
   help                    Show available commands
   exit                    Exit the music player
+status                  Show current playback status
 `);
 }
         
@@ -254,6 +255,24 @@ Available commands:
                 });
             }
         }
+        // STATUS
+else if (command === "status") {
+
+    const currentIndex = getCurrentIndex();
+    const playlist = getPlaylist();
+    const repeatMode = getRepeatMode();
+
+    if (currentIndex === -1) {
+        console.log("No song selected.");
+    } else {
+        const currentSong = getSong(currentIndex);
+
+        console.log(`Current song: ${currentSong}`);
+        console.log(`Position: ${currentIndex + 1}/${playlist.length}`);
+    }
+
+    console.log(`Repeat mode: ${repeatMode}`);
+}
 
         // REMOVE
         else if (command === "remove") {
