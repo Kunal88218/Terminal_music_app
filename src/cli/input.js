@@ -234,6 +234,7 @@ function startInput() {
 
                 else {
 
+                    const currentIndex = getCurrentIndex();
                     const removed = removeFromPlaylist(index);
 
                     if (!removed) {
@@ -241,6 +242,13 @@ function startInput() {
                     }
 
                     else {
+
+                        // Stop playback if the currently playing song was removed
+                        if (index === currentIndex) {
+                            stopMusic();
+                            setCurrentIndex(-1);
+                        }
+
                         console.log("Song removed from playlist.");
                     }
                 }
